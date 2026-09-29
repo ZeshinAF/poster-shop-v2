@@ -215,7 +215,7 @@
 /* ---------- TAPE ---------- */
 .tape {
   position: relative;
-  padding: 70px 0;
+  padding: 70px 0 24px;
   overflow: hidden;
 }
 
@@ -260,6 +260,8 @@
   position: relative;
 }
 
+/* Content is anchored to the top (not centred) so there's no dead band
+   between the tape and the section heading before the gallery pins. */
 .gallery__sticky {
   position: sticky;
   top: 0;
@@ -267,12 +269,13 @@
   overflow: hidden;
   display: flex;
   flex-direction: column;
-  justify-content: center;
+  justify-content: flex-start;
+  padding-top: max(88px, 11vh);
 }
 
 .gallery__track {
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   gap: clamp(24px, 4vw, 64px);
   padding: 0 var(--gutter);
   width: max-content;
@@ -307,11 +310,9 @@
   gap: 14px;
 }
 
+/* staircase: every other poster sits a little lower */
 .gallery__item:nth-child(even) {
-  margin-top: 8vh;
-}
-.gallery__item:nth-child(odd) {
-  margin-bottom: 8vh;
+  margin-top: 5vh;
 }
 
 .gallery__num {
