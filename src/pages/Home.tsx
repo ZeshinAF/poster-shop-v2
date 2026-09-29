@@ -1,20 +1,17 @@
 import { motion, useScroll, useSpring, useTransform, useVelocity } from 'motion/react';
 import { useLayoutEffect, useMemo, useRef, useState } from 'react';
-import { Link, useSearchParams } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import DecryptedText from '../bits/DecryptedText';
 import Magnet from '../bits/Magnet';
 import ScrollVelocity from '../bits/ScrollVelocity';
 import TiltedCard from '../bits/TiltedCard';
 import { Halftone } from '../components/Halftone';
 import { Page } from '../components/Page';
-import { PasteWall } from '../components/PasteWall';
 import { CountUp, Reveal, ScrubText, SplitReveal } from '../components/motion';
 import { money, typeLabel, type Kind, type Product } from '../lib/api';
 import { poster, posterFor } from '../lib/images';
 import { useStore } from '../lib/store';
 import './Home.css';
-
-type HeroBg = 'wall' | 'halftone';
 
 function Stamp() {
   const { scrollY } = useScroll();
@@ -39,10 +36,9 @@ function Stamp() {
   );
 }
 
-function Hero({ products, bg }: { products: Product[]; bg: HeroBg }) {
+function Hero({ products }: { products: Product[] }) {
   const count = products.length;
-  // Stable references so the background components don't re-lay out on unrelated re-renders.
-  const wallImages = useMemo(() => products.flatMap((p) => (p.image ? [p.image] : [])), [products]);
+  // Stable reference so the halftone doesn't re-lay out on unrelated re-renders.
   const halftoneSrc = useMemo(() => {
     const p = products.find((x) => x.id === 'alien' && x.image) ?? products.find((x) => x.image);
     if (!p?.image) return null;
@@ -56,12 +52,12 @@ function Hero({ products, bg }: { products: Product[]; bg: HeroBg }) {
   const titleY = useTransform(scrollYProgress, [0, 1], ['0%', '38%']);
   const titleScale = useTransform(scrollYProgress, [0, 1], [1, 0.86]);
   const fade = useTransform(scrollYProgress, [0, 0.7], [1, 0]);
-  const bgOpacity = useTransform(scrollYProgress, [0, 1], [bg === 'wall' ? 0.42 : 0.5, 0]);
+  const bgOpacity = useTransform(scrollYProgress, [0, 1], [0.5, 0]);
 
   return (
     <section ref={ref} className="hero">
       <motion.div className="hero__bg" style={{ opacity: bgOpacity }} aria-hidden="true">
-        {bg === 'wall' ? <PasteWall images={wallImages} /> : <Halftone src={halftoneSrc} />}
+        <Halftone src={halftoneSrc} />
       </motion.div>
       <div className="hero__fade" aria-hidden="true" />
 
@@ -243,7 +239,7 @@ function Manifesto() {
       </div>
       <ScrubText
         className="manifesto__text"
-        text="Не сме бутик и не сме галерия. Правим плакати и дрехи за хора, които знаят какво искат. Опаковаме всяка поръчка така, сякаш я пращаме на приятел. Донякъде така и е."
+        text="Не сме бутик и не сме галерия. Правим плакати и дрехи за хора, които знаят какво искат. Опаковаме всяка поръчка така, сякаш я пращаме на приятел."
         accents={['искат.', 'приятел.']}
       />
     </section>
@@ -328,12 +324,9 @@ function Split({ products }: { products: Product[] }) {
 
 export default function Home() {
   const { products } = useStore();
-  // ?bg=halftone switches the hero background (the paste-up wall is the default).
-  const [params] = useSearchParams();
-  const bg: HeroBg = params.get('bg') === 'halftone' ? 'halftone' : 'wall';
   return (
     <Page>
-      <Hero products={products} bg={bg} />
+      <Hero products={products} />
       <Tape />
       {products.length > 0 && <Gallery products={products} />}
       <Manifesto />
