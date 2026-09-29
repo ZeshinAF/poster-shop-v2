@@ -33,6 +33,7 @@ const ClickSpark: React.FC<ClickSparkProps> = ({
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const sparksRef = useRef<Spark[]>([]);
   const startTimeRef = useRef<number | null>(null);
+  const kickRef = useRef<(() => void) | null>(null);
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -123,13 +124,22 @@ const ClickSpark: React.FC<ClickSparkProps> = ({
         return true;
       });
 
+      // Adapted: stop the loop once the last spark has faded instead of
+      // clearing a full-viewport canvas every frame forever; a click restarts it.
+      if (sparksRef.current.length > 0) animationId = requestAnimationFrame(draw);
+      else running = false;
+    };
+
+    let running = false;
+    kickRef.current = () => {
+      if (running) return;
+      running = true;
       animationId = requestAnimationFrame(draw);
     };
 
-    animationId = requestAnimationFrame(draw);
-
     return () => {
       cancelAnimationFrame(animationId);
+      kickRef.current = null;
     };
   }, [sparkColor, sparkSize, sparkRadius, sparkCount, duration, easeFunc, extraScale]);
 
@@ -149,6 +159,7 @@ const ClickSpark: React.FC<ClickSparkProps> = ({
     }));
 
     sparksRef.current.push(...newSparks);
+    kickRef.current?.();
   };
 
   return (

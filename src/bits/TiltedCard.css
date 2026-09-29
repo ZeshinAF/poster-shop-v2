@@ -28,7 +28,10 @@
 
 .tilted-card-inner {
   position: relative;
-  transform-style: preserve-3d;
+  /* Adapted: flat, not preserve-3d. Only the (unused) overlay needs a 3D
+     context; the tilt itself just needs the parent's perspective, and the
+     3D context cost ~7fps of raster while scrolling past a row of these. */
+  transform-style: flat;
 }
 
 .tilted-card-img {
@@ -37,7 +40,6 @@
   left: 0;
   object-fit: cover;
   border-radius: 0;
-  box-shadow: 0 40px 80px -30px rgba(0, 0, 0, 0.9);
   will-change: transform;
   transform: translateZ(0);
 }

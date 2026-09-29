@@ -4,6 +4,7 @@ import { Link, useLocation } from 'react-router-dom';
 import DecryptedText from '../bits/DecryptedText';
 import GlitchText from '../bits/GlitchText';
 import Magnet from '../bits/Magnet';
+import { lockScroll } from '../lib/smoothScroll';
 import { useStore } from '../lib/store';
 import './Nav.css';
 
@@ -42,6 +43,16 @@ export function Nav() {
   });
 
   useEffect(() => setMenuOpen(false), [location]);
+
+  useEffect(() => {
+    lockScroll(menuOpen);
+    return () => lockScroll(false);
+  }, [menuOpen]);
+
+  // Sticky bars (catalog filters) offset by this so the nav never covers them.
+  useEffect(() => {
+    document.documentElement.style.setProperty('--nav-offset', hidden ? '0px' : 'var(--nav-h)');
+  }, [hidden]);
 
   const isActive = (to: string) => {
     const [path, query] = to.split('?');

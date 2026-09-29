@@ -44,6 +44,7 @@
 .pcard__img--g {
   opacity: 0;
   mix-blend-mode: screen;
+  will-change: transform;
 }
 .pcard__img--r {
   filter: sepia(1) saturate(8) hue-rotate(-40deg);
@@ -119,8 +120,7 @@
   letter-spacing: 0.14em;
   text-transform: uppercase;
   padding: 3px 6px;
-  background: rgba(10, 10, 11, 0.72);
-  backdrop-filter: blur(4px);
+  background: rgba(10, 10, 11, 0.86);
 }
 
 .pcard__reg {

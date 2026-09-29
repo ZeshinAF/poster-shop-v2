@@ -2,15 +2,20 @@ import { motion, useScroll, useSpring, useTransform, useVelocity } from 'motion/
 import { useLayoutEffect, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
 import DecryptedText from '../bits/DecryptedText';
-import LetterGlitch from '../bits/LetterGlitch';
 import Magnet from '../bits/Magnet';
 import ScrollVelocity from '../bits/ScrollVelocity';
 import TiltedCard from '../bits/TiltedCard';
+import { GlitchField } from '../components/GlitchField';
 import { Page } from '../components/Page';
 import { CountUp, Reveal, ScrubText, SplitReveal } from '../components/motion';
 import { money, typeLabel, type Kind, type Product } from '../lib/api';
+import { poster, posterFor } from '../lib/images';
 import { useStore } from '../lib/store';
 import './Home.css';
+
+// Module-level so the canvas effect never sees a "new" array and re-lays out.
+const GLITCH_COLORS = ['#1c2412', '#2b3d14', '#3f5c17', '#a3e635', '#2a1212'];
+const GLITCH_CHARS = 'ТИРАЖ/150ABCDEFGHIJKLMNOPQRSTUVWXYZ!@#$&*<>0123456789';
 
 function Stamp() {
   const { scrollY } = useScroll();
@@ -42,14 +47,7 @@ function Hero({ count }: { count: number }) {
   return (
     <section ref={ref} className="hero">
       <motion.div className="hero__bg" style={{ opacity: bgOpacity }} aria-hidden="true">
-        <LetterGlitch
-          glitchColors={['#1c2412', '#3f5c17', '#a3e635', '#2a1212']}
-          glitchSpeed={60}
-          centerVignette
-          outerVignette
-          smooth
-          characters="ТИРАЖ/150ABCDEFGHIJKLMNOPQRSTUVWXYZ!@#$&*<>0123456789"
-        />
+        <GlitchField colors={GLITCH_COLORS} characters={GLITCH_CHARS} />
       </motion.div>
       <div className="hero__fade" aria-hidden="true" />
 
@@ -180,7 +178,7 @@ function Gallery({ products }: { products: Product[] }) {
               </div>
               {p.image ? (
                 <TiltedCard
-                  imageSrc={p.image}
+                  imageSrc={posterFor(p.image, 373)}
                   altText={p.titleBg}
                   captionText={`${typeLabel(p.kind)} // ${money(p.price)}`}
                   containerHeight="min(62vh, 560px)"
@@ -285,7 +283,8 @@ function Split({ products }: { products: Product[] }) {
             <Link to={`/catalog?kind=${p.kind}`} className="split__link" data-cursor="view">
               {img && (
                 <motion.img
-                  src={img}
+                  src={poster(img, 1280)}
+                  decoding="async"
                   alt=""
                   className="split__img"
                   animate={{ scale: active ? 1.08 : 1.2, opacity: active ? 0.55 : 0.18 }}

@@ -10,10 +10,10 @@
 
 .cat-bar {
   position: sticky;
-  top: 0;
+  top: var(--nav-offset);
+  transition: top 0.45s var(--ease-out);
   z-index: 40;
-  background: rgba(10, 10, 11, 0.82);
-  backdrop-filter: blur(14px);
+  background: rgba(10, 10, 11, 0.96);
   border-top: 1px solid var(--line);
   border-bottom: 1px solid var(--line);
 }

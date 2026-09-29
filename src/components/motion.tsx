@@ -23,7 +23,8 @@ export function SplitReveal({
   const words = text.split(' ');
   let i = 0;
   return (
-    <span ref={ref} className={className} aria-label={text} style={{ display: 'inline-block' }}>
+    <span ref={ref} className={className} style={{ display: 'inline-block' }}>
+      <span className="sr-only">{text}</span>
       {words.map((w, wi) => (
         <span key={wi} aria-hidden="true" style={{ display: 'inline-block', whiteSpace: 'nowrap' }}>
           {[...w].map((ch) => {

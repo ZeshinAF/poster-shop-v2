@@ -2,10 +2,10 @@ import { AnimatePresence, MotionConfig } from 'motion/react';
 import { lazy, Suspense, useState } from 'react';
 import { Route, Routes, useLocation } from 'react-router-dom';
 import ClickSpark from './bits/ClickSpark';
-import Noise from './bits/Noise';
 import { CartDrawer } from './components/CartDrawer';
 import { Cursor } from './components/Cursor';
 import { Footer } from './components/Footer';
+import { Grain } from './components/Grain';
 import { Nav } from './components/Nav';
 import { Preloader } from './components/Preloader';
 import { scrollToTop, useSmoothScroll } from './lib/smoothScroll';
@@ -62,10 +62,7 @@ export default function App() {
           <Footer />
           <CartDrawer />
         </ClickSpark>
-        <div className="grain" aria-hidden="true">
-          <Noise patternAlpha={22} patternRefreshInterval={3} />
-        </div>
-        <div className="scanlines" aria-hidden="true" />
+        <Grain />
         <Cursor />
         {booting && <Preloader onDone={finishBoot} />}
       </StoreProvider>

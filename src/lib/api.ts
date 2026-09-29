@@ -40,12 +40,25 @@ interface ApiProduct {
 
 // Empty in the GitHub Pages test build (no deployed backend yet) — the site
 // then runs off the bundled snapshot and checkout goes into demo mode.
-export const API_URL: string = import.meta.env.VITE_API_URL ?? '';
+// Trailing slashes trimmed: "https://api.example/" would otherwise produce
+// "//api/products", which the backend 404s.
+export const API_URL: string = (import.meta.env.VITE_API_URL ?? '').replace(/\/+$/, '');
 export const isDemo = !API_URL;
 
+// Poster URLs come from admin input; only ever render http(s) images.
+function safeImage(url: string | null): string | null {
+  if (!url) return null;
+  try {
+    const { protocol } = new URL(url);
+    return protocol === 'https:' || protocol === 'http:' ? url : null;
+  } catch {
+    return null;
+  }
+}
+
 function toProduct(row: ApiProduct): Product | null {
-  const v = row.variants[0];
-  if (!v) return null;
+  const v = row.variants?.[0];
+  if (!v || (row.kind !== 'film' && row.kind !== 'band')) return null;
   return {
     id: row.slug,
     titleBg: row.title_bg,
@@ -53,11 +66,11 @@ function toProduct(row: ApiProduct): Product | null {
     kind: row.kind,
     year: row.year,
     desc: row.description,
-    image: row.image_url,
+    image: safeImage(row.image_url),
     reg: row.reg_code,
     edition: row.edition,
     price: Number(v.price),
-    stock: v.stock,
+    stock: Math.max(0, Math.floor(Number(v.stock) || 0)),
     variantId: Number(v.id),
   };
 }
@@ -66,8 +79,8 @@ const fromSnapshot = (snapshot as ApiProduct[]).map(toProduct).filter((p): p is 
 
 let cache: Promise<Product[]> | null = null;
 
-export function fetchProducts(): Promise<Product[]> {
-  if (cache) return cache;
+export function fetchProducts(force = false): Promise<Product[]> {
+  if (cache && !force) return cache;
   cache = (async () => {
     if (isDemo) return fromSnapshot;
     try {
@@ -101,7 +114,16 @@ export interface OrderResult {
   demo: boolean;
 }
 
-export class OrderError extends Error {}
+export class OrderError extends Error {
+  status: number;
+  constructor(message: string, status = 0) {
+    super(message);
+    this.status = status;
+  }
+}
+
+/** Backend caps quantity per line at 50 (see poster-shop-backend schemas/order.ts). */
+export const MAX_QTY_PER_LINE = 50;
 
 export async function placeOrder(input: PlaceOrderInput, localTotal: number): Promise<OrderResult> {
   if (isDemo) {
@@ -118,8 +140,10 @@ export async function placeOrder(input: PlaceOrderInput, localTotal: number): Pr
   } catch {
     throw new OrderError('Няма връзка със сървъра. Опитай отново.');
   }
-  if (res.status === 409) throw new OrderError('Наличността се промени — провери коша.');
-  if (!res.ok) throw new OrderError('Нещо се обърка при поръчката. Опитай отново.');
+  if (res.status === 409) throw new OrderError('Наличността се промени — провери коша.', 409);
+  if (res.status === 429) throw new OrderError('Твърде много опити. Изчакай минута и опитай пак.', 429);
+  if (res.status === 400) throw new OrderError('Провери данните за доставка — нещо не е наред.', 400);
+  if (!res.ok) throw new OrderError('Нещо се обърка при поръчката. Опитай отново.', res.status);
   const data = await res.json();
   return { orderNumber: data.order_number, total: Number(data.total), demo: false };
 }

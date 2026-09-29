@@ -2,6 +2,7 @@ import { AnimatePresence, motion } from 'motion/react';
 import { useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { FREE_SHIPPING_THRESHOLD, money } from '../lib/api';
+import { poster } from '../lib/images';
 import { lockScroll } from '../lib/smoothScroll';
 import { useStore } from '../lib/store';
 import './CartDrawer.css';
@@ -84,7 +85,7 @@ export function CartDrawer() {
                     transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
                   >
                     <Link to={`/product/${product.id}`} onClick={closeDrawer} className="drawer__thumb">
-                      {product.image && <img src={product.image} alt="" loading="lazy" />}
+                      {product.image && <img src={poster(product.image, 640)} alt="" loading="lazy" decoding="async" />}
                     </Link>
                     <div className="drawer__info">
                       <div className="drawer__name">{product.titleBg}</div>

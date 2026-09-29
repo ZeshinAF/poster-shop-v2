@@ -4,19 +4,22 @@ import { Link, useNavigate } from 'react-router-dom';
 import { Page } from '../components/Page';
 import { SplitReveal } from '../components/motion';
 import { isDemo, money, OrderError, placeOrder } from '../lib/api';
+import { poster } from '../lib/images';
 import { useStore } from '../lib/store';
 import './Checkout.css';
 
+// maxLength mirrors the backend's order schema (poster-shop-backend/src/schemas/order.ts),
+// so an over-long field is caught in the form instead of as a generic 400.
 const FIELDS = [
-  { name: 'name', label: 'Име и фамилия', type: 'text', autoComplete: 'name', wide: true },
-  { name: 'email', label: 'Имейл', type: 'email', autoComplete: 'email', wide: true },
-  { name: 'address', label: 'Адрес / офис на куриер', type: 'text', autoComplete: 'street-address', wide: true },
-  { name: 'city', label: 'Град', type: 'text', autoComplete: 'address-level2', wide: false },
-  { name: 'postcode', label: 'Пощ. код', type: 'text', autoComplete: 'postal-code', wide: false },
+  { name: 'name', label: 'Име и фамилия', type: 'text', autoComplete: 'name', wide: true, max: 200 },
+  { name: 'email', label: 'Имейл', type: 'email', autoComplete: 'email', wide: true, max: 254 },
+  { name: 'address', label: 'Адрес / офис на куриер', type: 'text', autoComplete: 'street-address', wide: true, max: 300 },
+  { name: 'city', label: 'Град', type: 'text', autoComplete: 'address-level2', wide: false, max: 120 },
+  { name: 'postcode', label: 'Пощ. код', type: 'text', autoComplete: 'postal-code', wide: false, max: 20 },
 ] as const;
 
 export default function Checkout() {
-  const { lines, subtotal, shipping, total, clear } = useStore();
+  const { lines, subtotal, shipping, total, clear, refresh } = useStore();
   const [pay, setPay] = useState<'CARD' | 'COD'>('CARD');
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -26,17 +29,19 @@ export default function Checkout() {
   async function submit(e: React.FormEvent) {
     e.preventDefault();
     if (!formRef.current?.reportValidity() || lines.length === 0) return;
+    if (busy) return;
     const fd = new FormData(formRef.current);
+    const field = (k: string) => String(fd.get(k) ?? '').trim();
     setBusy(true);
     setError(null);
     try {
       const result = await placeOrder(
         {
-          name: String(fd.get('name')),
-          email: String(fd.get('email')),
-          address: String(fd.get('address')),
-          city: String(fd.get('city')),
-          postcode: String(fd.get('postcode')),
+          name: field('name'),
+          email: field('email'),
+          address: field('address'),
+          city: field('city'),
+          postcode: field('postcode'),
           paymentMethod: pay,
           lines: lines.map((l) => ({ variantId: l.product.variantId, qty: l.qty })),
         },
@@ -46,6 +51,8 @@ export default function Checkout() {
       navigate('/confirmation', { state: result });
     } catch (err) {
       setError(err instanceof OrderError ? err.message : 'Нещо се обърка. Опитай отново.');
+      // Stock moved under us: pull live stock so the cart re-clamps and the summary is honest.
+      if (err instanceof OrderError && err.status === 409) await refresh();
       setBusy(false);
     }
   }
@@ -103,7 +110,14 @@ export default function Checkout() {
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: 0.5 + i * 0.06, duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
                 >
-                  <input name={f.name} type={f.type} autoComplete={f.autoComplete} placeholder=" " required />
+                  <input
+                    name={f.name}
+                    type={f.type}
+                    autoComplete={f.autoComplete}
+                    maxLength={f.max}
+                    placeholder=" "
+                    required
+                  />
                   <span className="field__label">{f.label}</span>
                   <span className="field__line" />
                 </motion.label>
@@ -162,7 +176,7 @@ export default function Checkout() {
                   animate={{ opacity: 1, x: 0 }}
                   transition={{ delay: 0.6 + i * 0.07 }}
                 >
-                  <div className="co__thumb">{l.product.image && <img src={l.product.image} alt="" />}</div>
+                  <div className="co__thumb">{l.product.image && <img src={poster(l.product.image, 640)} alt="" decoding="async" />}</div>
                   <div className="co__line-info">
                     <span className="co__line-name">{l.product.titleBg}</span>
                     <span className="co__line-meta">

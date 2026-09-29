@@ -44,6 +44,8 @@ const Magnet: React.FC<MagnetProps> = ({
       const distX = Math.abs(centerX - e.clientX);
       const distY = Math.abs(centerY - e.clientY);
 
+      // Adapted: bail out when idle — the original set fresh state objects on
+      // every mousemove anywhere on the page, re-rendering each Magnet each time.
       if (distX < width / 2 + padding && distY < height / 2 + padding) {
         setIsActive(true);
         const offsetX = (e.clientX - centerX) / magnetStrength;
@@ -51,7 +53,7 @@ const Magnet: React.FC<MagnetProps> = ({
         setPosition({ x: offsetX, y: offsetY });
       } else {
         setIsActive(false);
-        setPosition({ x: 0, y: 0 });
+        setPosition((p) => (p.x === 0 && p.y === 0 ? p : { x: 0, y: 0 }));
       }
     };
 

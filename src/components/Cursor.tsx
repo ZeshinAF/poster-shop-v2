@@ -36,7 +36,15 @@ export function Cursor() {
     };
     // Content scrolls under a still pointer (smooth scroll, pinned gallery),
     // so re-check what's beneath it instead of waiting for the next move.
-    const onScroll = () => classify(document.elementFromPoint(lastX, lastY));
+    // Throttled to one hit-test per frame; scroll events can fire several times per frame.
+    let pending = 0;
+    const onScroll = () => {
+      if (pending) return;
+      pending = requestAnimationFrame(() => {
+        pending = 0;
+        classify(document.elementFromPoint(lastX, lastY));
+      });
+    };
     const leave = () => setHidden(true);
     const press = () => setDown(true);
     const release = () => setDown(false);
@@ -49,6 +57,7 @@ export function Cursor() {
       document.body.classList.remove('has-cursor');
       window.removeEventListener('pointermove', move);
       window.removeEventListener('scroll', onScroll);
+      cancelAnimationFrame(pending);
       document.removeEventListener('pointerleave', leave);
       window.removeEventListener('pointerdown', press);
       window.removeEventListener('pointerup', release);

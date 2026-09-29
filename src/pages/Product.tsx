@@ -8,6 +8,7 @@ import { Page } from '../components/Page';
 import { ProductCard } from '../components/ProductCard';
 import { Reveal, SplitReveal } from '../components/motion';
 import { kindLabel, money, typeLabel } from '../lib/api';
+import { posterFor } from '../lib/images';
 import { useStore } from '../lib/store';
 import NotFound from './NotFound';
 import './Product.css';
@@ -66,7 +67,7 @@ export default function Product() {
             >
               {product.image ? (
                 <TiltedCard
-                  imageSrc={product.image}
+                  imageSrc={posterFor(product.image, 480)}
                   altText={product.titleBg}
                   captionText={`${product.reg} · ${product.edition}`}
                   containerHeight={`calc(${POSTER_W} * 1.5)`}

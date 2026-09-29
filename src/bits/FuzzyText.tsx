@@ -174,8 +174,29 @@ const FuzzyText: React.FC<FuzzyTextProps> = ({
 
       if (glitchMode) startGlitchLoop();
 
+      // Adapted: sleep while offscreen or in a background tab instead of
+      // redrawing every row at 60fps forever.
+      let onScreen = false;
+      let running = false;
+      const wake = () => {
+        if (!running && onScreen && !document.hidden && !isCancelled) {
+          running = true;
+          animationFrameId = window.requestAnimationFrame(run);
+        }
+      };
+      const io = new IntersectionObserver(([entry]) => {
+        onScreen = entry.isIntersecting;
+        wake();
+      });
+      io.observe(canvas);
+      document.addEventListener('visibilitychange', wake);
+
       const run = (timestamp: number) => {
         if (isCancelled) return;
+        if (!onScreen || document.hidden) {
+          running = false;
+          return;
+        }
 
         if (timestamp - lastFrameTime < frameDuration) {
           animationFrameId = window.requestAnimationFrame(run);
@@ -225,8 +246,6 @@ const FuzzyText: React.FC<FuzzyTextProps> = ({
         animationFrameId = window.requestAnimationFrame(run);
       };
 
-      animationFrameId = window.requestAnimationFrame(run);
-
       const isInsideTextArea = (x: number, y: number) =>
         x >= interactiveLeft && x <= interactiveRight && y >= interactiveTop && y <= interactiveBottom;
 
@@ -253,7 +272,6 @@ const FuzzyText: React.FC<FuzzyTextProps> = ({
 
       const handleTouchMove = (e: TouchEvent) => {
         if (!enableHover) return;
-        e.preventDefault();
         const rect = canvas.getBoundingClientRect();
         const touch = e.touches[0];
         const x = touch.clientX - rect.left;
@@ -268,7 +286,7 @@ const FuzzyText: React.FC<FuzzyTextProps> = ({
       if (enableHover) {
         canvas.addEventListener('mousemove', handleMouseMove);
         canvas.addEventListener('mouseleave', handleMouseLeave);
-        canvas.addEventListener('touchmove', handleTouchMove, { passive: false });
+        canvas.addEventListener('touchmove', handleTouchMove, { passive: true });
         canvas.addEventListener('touchend', handleTouchEnd);
       }
 
@@ -278,6 +296,8 @@ const FuzzyText: React.FC<FuzzyTextProps> = ({
 
       const cleanup = () => {
         window.cancelAnimationFrame(animationFrameId);
+        io.disconnect();
+        document.removeEventListener('visibilitychange', wake);
         clearTimeout(glitchTimeoutId);
         clearTimeout(glitchEndTimeoutId);
         clearTimeout(clickTimeoutId);
