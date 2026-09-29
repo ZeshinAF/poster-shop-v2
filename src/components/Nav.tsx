@@ -72,9 +72,7 @@ export function Nav() {
           <Link to="/" className="nav__logo" aria-label="Тираж — начало">
             <GlitchText speed={0.6} enableShadows enableOnHover className="nav__glitch">
               ТИРАЖ
-            </GlitchText>
-            <span className="nav__ver">v2</span>
-          </Link>
+            </GlitchText>          </Link>
 
           <nav className="nav__links" aria-label="Основна навигация">
             {LINKS.map((l) => (

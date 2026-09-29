@@ -65,7 +65,7 @@ export function Footer() {
 
       <div className="wrap foot__bar">
         <span>© {new Date().getFullYear()} Тираж</span>
-        <span>{isDemo ? 'v2 · тестова версия · демо режим' : 'v2 · тестова версия'}</span>
+        <span>{isDemo ? 'тестова версия · демо режим' : 'тестова версия'}</span>
         <span>Без реклами. Без благодарствено писмо.</span>
       </div>
     </footer>

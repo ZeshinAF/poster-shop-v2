@@ -40,14 +40,6 @@
   margin: 0;
 }
 
-.nav__ver {
-  font-family: var(--f-mono);
-  font-size: 9px;
-  color: var(--bg);
-  background: var(--acid);
-  padding: 1px 4px;
-  letter-spacing: 0.08em;
-}
 
 .nav__links {
   display: none;

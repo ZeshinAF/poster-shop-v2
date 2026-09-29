@@ -28,7 +28,11 @@ function Stamp() {
           <path id="stamp-circle" d="M100,100 m-78,0 a78,78 0 1,1 156,0 a78,78 0 1,1 -156,0" />
         </defs>
         <text>
-          <textPath href="#stamp-circle">ПЕЧАТ ✕ ПЛАТ ✕ ПОЗИЦИЯ ✕ БЕЗ КОМПРОМИС ✕</textPath>
+          {/* textLength = the circle's circumference (2π·78): the letter spacing stretches so
+              the text closes the ring exactly, leaving just one space before it starts again. */}
+          <textPath href="#stamp-circle" textLength={490} lengthAdjust="spacing">
+            {`ПЕЧАТ ✕ ПЛАТ ✕ ПОЗИЦИЯ ✕ БЕЗ КОМПРОМИС ✕${NBSP}`}
+          </textPath>
         </text>
       </svg>
       <span className="stamp__core">//</span>
