@@ -1,6 +1,6 @@
 import { useState, type CSSProperties } from 'react';
 
-function makeTile(size = 160, alpha = 26): string {
+function makeTile(size = 160, alpha = 14): string {
   const c = document.createElement('canvas');
   c.width = c.height = size;
   const ctx = c.getContext('2d');

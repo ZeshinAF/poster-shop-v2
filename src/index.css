@@ -48,7 +48,8 @@ html.lenis body {
 body {
   margin: 0;
   font-family: var(--f-sans);
-  background: var(--bg);
+  /* Transparent on purpose: <html> paints --bg, and the grain layer sits
+     between the two (z-index -1) so it textures the background only. */
   overflow-x: hidden;
 }
 
@@ -130,13 +131,15 @@ img {
    ~15fps while scrolling). Oversized (inset -20%) so the ±7% jitter never
    exposes an edge. The jitter pauses while Lenis is scrolling — the moment
    frames matter most — and resumes when the page is still. */
+/* Behind all content (z-index -1): textures the dark background only, never
+   poster images or text. */
 .grain {
   position: fixed;
   inset: -20%;
-  z-index: 90;
+  z-index: -1;
   pointer-events: none;
   background-image:
-    repeating-linear-gradient(to bottom, transparent 0 2px, rgba(0, 0, 0, 0.16) 2px 3px),
+    repeating-linear-gradient(to bottom, transparent 0 2px, rgba(0, 0, 0, 0.1) 2px 3px),
     var(--grain-tile, none);
   background-repeat: repeat;
   will-change: transform;
