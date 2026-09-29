@@ -14,7 +14,7 @@ export function Footer() {
           <div>
             <div className="kicker kicker--acid">// тираж</div>
             <p className="foot__lede">
-              Печатница за несъгласни. Ръчно ситопечатани плакати, номерирани, в тираж от 150. Когато свърши — свърши.
+              Печатница за несъгласни. Плакати, дрехи и други улики за хора с позиция. Без реклами. Без благодарствено писмо.
             </p>
           </div>
           <div>
@@ -35,12 +35,12 @@ export function Footer() {
             </ul>
           </div>
           <div>
-            <div className="kicker">// спецификация</div>
+            <div className="kicker">// доставка</div>
             <ul className="foot__list foot__list--mono">
-              <li>50 × 70 см</li>
-              <li>Мат 250 г</li>
-              <li>Сито, ръчно</li>
-              <li>Доставка 6 € / безплатна над 80 €</li>
+              <li>6 € до адрес или офис</li>
+              <li>Безплатна над 80 €</li>
+              <li>Карта или наложен платеж</li>
+              <li>Опаковано без реклами</li>
             </ul>
           </div>
         </div>

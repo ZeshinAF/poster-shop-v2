@@ -104,6 +104,16 @@
 .pd__title {
   /* letters are no-wrap spans, so the size itself must keep long titles inside the column */
   font-size: clamp(38px, 10.5vw, 112px);
+}
+
+@media (min-width: 1000px) {
+  /* two-column layout: the title only gets ~half the viewport */
+  .pd__title {
+    font-size: clamp(56px, 6.2vw, 112px);
+  }
+}
+
+.pd__title {
   margin-top: 14px;
 }
 
@@ -184,6 +194,11 @@
 .pd__spec {
   background: var(--bg);
   padding: 14px 16px;
+}
+
+/* An odd spec count would leave an empty grid cell; let the last one span the row. */
+.pd__spec:last-child:nth-child(odd) {
+  grid-column: 1 / -1;
 }
 
 .pd__spec dd {

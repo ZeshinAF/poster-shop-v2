@@ -5,9 +5,9 @@ import './Preloader.css';
 const BOOT_LINES = [
   '> ТИРАЖ OS v2.0 // boot',
   '> зареждане на мастило ........ ok',
-  '> калибриране на ситото ....... ok',
-  '> номериране на тиража ........ /150',
-  '> несъгласие ................... 100%',
+  '> опъване на ситото ........... ok',
+  '> кроене на несъгласие ........ ok',
+  '> позиция ...................... 100%',
 ];
 
 export function Preloader({ onDone }: { onDone: () => void }) {
@@ -54,7 +54,7 @@ export function Preloader({ onDone }: { onDone: () => void }) {
       >
         <div className="preloader__foot">
           <motion.span className="preloader__count">{counter}</motion.span>
-          <span className="preloader__label">// тираж се отпечатва</span>
+          <span className="preloader__label">// тиражът се подготвя</span>
         </div>
       </motion.div>
       <motion.div

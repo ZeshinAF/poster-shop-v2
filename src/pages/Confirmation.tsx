@@ -21,7 +21,7 @@ export default function Confirmation() {
           aria-hidden="true"
         >
           <span>Отпечатано</span>
-          <span className="done__stamp-sub">{order.demo ? 'демо' : 'тираж потвърден'}</span>
+          <span className="done__stamp-sub">{order.demo ? 'демо' : 'потвърдено'}</span>
         </motion.div>
 
         <div className="kicker kicker--acid">// поръчката е приета</div>
@@ -52,7 +52,7 @@ export default function Confirmation() {
         </div>
 
         <motion.p className="done__text" initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 1.3 }}>
-          Ще пристигне в тубус. Без реклами, без благодарствено писмо. Закачи го и не питай никого.
+          Пристига опаковано — без реклами, без благодарствено писмо. Закачи го или го облечи. И не питай никого.
           {order.demo && ' (Това беше тестова поръчка — нищо не е изпратено.)'}
         </motion.p>
 

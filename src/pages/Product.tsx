@@ -16,12 +16,15 @@ import './Product.css';
 // Poster keeps 2:3 and never exceeds the viewport width on phones.
 const POSTER_W = 'min(52vh, 480px, calc(100vw - 2 * var(--gutter)))';
 
-const SPECS = [
+// Poster specs. Every current kind (film/band) is a poster; other product types
+// (e.g. clothing) need their own specs — ideally stored per product in the DB.
+const POSTER_SPECS = [
   { k: 'Формат', v: '50 × 70 см' },
-  { k: 'Хартия', v: 'Мат 250 г' },
   { k: 'Печат', v: 'Сито, ръчно' },
   { k: 'Рамка', v: 'Без. Рамката е компромис.' },
 ];
+const NBSP = String.fromCharCode(160);
+const isPoster = (kind: string) => kind === 'film' || kind === 'band';
 
 export default function Product() {
   const { id } = useParams();
@@ -55,7 +58,7 @@ export default function Product() {
     <Page>
       <section ref={heroRef} className="pd">
         <div className="pd__ghost" aria-hidden="true">
-          <ScrollVelocity texts={[`${product.titleEn} ✕ `]} velocity={30} numCopies={4} className="pd__ghost-text" />
+          <ScrollVelocity texts={[`${NBSP}${product.titleEn} ✕`]} velocity={30} numCopies={4} className="pd__ghost-text" />
         </div>
 
         <div className="wrap pd__grid">
@@ -69,7 +72,7 @@ export default function Product() {
                 <TiltedCard
                   imageSrc={posterFor(product.image, 480)}
                   altText={product.titleBg}
-                  captionText={`${product.reg} · ${product.edition}`}
+                  captionText={[product.reg, product.edition].filter(Boolean).join(' · ')}
                   containerHeight={`calc(${POSTER_W} * 1.5)`}
                   containerWidth="100%"
                   imageHeight={`calc(${POSTER_W} * 1.5)`}
@@ -92,7 +95,7 @@ export default function Product() {
             </Link>
 
             <DecryptedText
-              text={`// ${kindLabel(product.kind)} · ${product.year} · тираж ${product.edition}`}
+              text={`// ${kindLabel(product.kind)} · ${product.year}${product.edition ? ` · тираж ${product.edition}` : ''}`}
               animateOn="view"
               sequential
               speed={30}
@@ -139,9 +142,10 @@ export default function Product() {
               </div>
             </Reveal>
 
+            {isPoster(product.kind) && (
             <Reveal delay={0.8}>
               <dl className="pd__specs">
-                {SPECS.map((s) => (
+                {POSTER_SPECS.map((s) => (
                   <div key={s.k} className="pd__spec">
                     <dt className="kicker">{s.k}</dt>
                     <dd>{s.v}</dd>
@@ -149,6 +153,7 @@ export default function Product() {
                 ))}
               </dl>
             </Reveal>
+            )}
 
             <Reveal delay={0.9}>
               <div className="pd__buy">

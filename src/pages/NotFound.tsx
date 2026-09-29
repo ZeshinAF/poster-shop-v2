@@ -24,7 +24,7 @@ export default function NotFound() {
           404
         </FuzzyText>
         <p style={{ color: 'var(--ink-2)', maxWidth: 420, lineHeight: 1.6, margin: 0 }}>
-          Този плакат не съществува. Или никога не е бил отпечатан, или тиражът свърши преди да стигнеш.
+          Тази страница не съществува. Или никога не е била отпечатана, или вече е разпродадена.
         </p>
         <Link
           to="/catalog"

@@ -15,7 +15,7 @@ import './Home.css';
 
 // Module-level so the canvas effect never sees a "new" array and re-lays out.
 const GLITCH_COLORS = ['#1c2412', '#2b3d14', '#3f5c17', '#a3e635', '#2a1212'];
-const GLITCH_CHARS = 'ТИРАЖ/150ABCDEFGHIJKLMNOPQRSTUVWXYZ!@#$&*<>0123456789';
+const GLITCH_CHARS = 'ТИРАЖ//ABCDEFGHIJKLMNOPQRSTUVWXYZ!@#$&*<>0123456789';
 
 function Stamp() {
   const { scrollY } = useScroll();
@@ -28,10 +28,10 @@ function Stamp() {
           <path id="stamp-circle" d="M100,100 m-78,0 a78,78 0 1,1 156,0 a78,78 0 1,1 -156,0" />
         </defs>
         <text>
-          <textPath href="#stamp-circle">РЪЧНО ОТПЕЧАТАНО ✕ НОМЕРИРАНО ✕ БЕЗ КОМПРОМИС ✕ </textPath>
+          <textPath href="#stamp-circle">ПЕЧАТ ✕ ПЛАТ ✕ ПОЗИЦИЯ ✕ БЕЗ КОМПРОМИС ✕</textPath>
         </text>
       </svg>
-      <span className="stamp__core">/150</span>
+      <span className="stamp__core">//</span>
     </motion.div>
   );
 }
@@ -76,8 +76,8 @@ function Hero({ count }: { count: number }) {
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.9, duration: 0.8 }}
           >
-            Плакати за стени, които обявяват позиция. Ситопечат на ръка, мат 250 г, номерирани до сто и петдесет. Без
-            повторен тираж.
+            Плакати за стени и дрехи за хора, които обявяват позиция. Отпечатано и скроено без компромис. Без реклами,
+            без благодарствено писмо.
           </motion.p>
 
           <motion.div
@@ -107,12 +107,16 @@ function Hero({ count }: { count: number }) {
   );
 }
 
+// Leading non-breaking space on each repeated marquee copy: a plain space at the
+// edge of a copy gets collapsed, gluing the previous copy's ✕ to the first word.
+const NBSP = String.fromCharCode(160);
+
 function Tape() {
   return (
     <section className="tape" aria-hidden="true">
       <div className="tape__band tape__band--acid">
         <ScrollVelocity
-          texts={['Сито, ръчно ✕ Мат 250 г ✕ 50 × 70 см ✕ Тираж /150 ✕ ']}
+          texts={[`${NBSP}Плакати ✕ Дрехи ✕ Мастило ✕ Плат ✕ Позиция ✕`]}
           velocity={60}
           numCopies={6}
           className="tape__text"
@@ -120,7 +124,7 @@ function Tape() {
       </div>
       <div className="tape__band tape__band--blood">
         <ScrollVelocity
-          texts={['Когато свърши — свърши ✕ Без реклами ✕ Без повторен тираж ✕ ']}
+          texts={[`${NBSP}Без реклами ✕ Без благодарствено писмо ✕ Без компромис ✕`]}
           velocity={-50}
           numCopies={6}
           className="tape__text"
@@ -225,8 +229,8 @@ function Manifesto() {
       </div>
       <ScrubText
         className="manifesto__text"
-        text="Всеки плакат е отпечатан на ръка, в тираж от сто и петдесет. Без реклами, без благодарствено писмо, без компромис с рамката. Когато свърши — свърши. Това не е декорация. Това е позиция."
-        accents={['свърши.', 'позиция.']}
+        text="Всичко тук е направено, за да се носи — на стената или на гърба ти. Без реклами, без благодарствено писмо, без компромис. Не е декорация. Не е мода. Това е позиция."
+        accents={['компромис.', 'позиция.']}
       />
     </section>
   );
@@ -234,10 +238,10 @@ function Manifesto() {
 
 function Specs({ count }: { count: number }) {
   const items = [
-    { k: 'Брой в тираж', v: <CountUp to={150} />, note: 'После — никога повече.' },
-    { k: 'Грамаж', v: <CountUp to={250} suffix=" г" />, note: 'Мат. Без отблясък, без лъжа.' },
-    { k: 'Формат', v: <>50×70</>, note: 'Сантиметри позиция.' },
     { k: 'Заглавия', v: <CountUp to={count} />, note: 'В обращение сега.' },
+    { k: 'Реклами', v: <CountUp to={0} />, note: 'Нито една. Никъде.' },
+    { k: 'Благодарствени писма', v: <CountUp to={0} />, note: 'Не ги пишем. Не ги пращаме.' },
+    { k: 'Безплатна доставка', v: <CountUp to={80} suffix=" €" />, note: 'Над тази сума. Под нея — 6 €.' },
   ];
   return (
     <section className="specs wrap">

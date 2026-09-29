@@ -55,7 +55,7 @@ export function ProductCard({ product, index = 0 }: { product: Product; index?: 
           )}
           <span className="pcard__scan" aria-hidden="true" />
           <span className="pcard__reg">{product.reg}</span>
-          <span className="pcard__ed">{product.edition}</span>
+          {product.edition && <span className="pcard__ed">{product.edition}</span>}
           {(soldOut || low) && (
             <span className={`pcard__flag ${soldOut ? 'pcard__flag--out' : ''}`}>
               {soldOut ? 'Изчерпан' : `Последни ${product.stock}`}
