@@ -1,0 +1,82 @@
+.foot {
+  margin-top: 120px;
+  border-top: 1px solid var(--line);
+  padding-top: 64px;
+  overflow: hidden;
+}
+
+.foot__grid {
+  display: grid;
+  gap: 40px;
+  grid-template-columns: 1fr;
+}
+
+@media (min-width: 800px) {
+  .foot__grid {
+    grid-template-columns: 2fr 1fr 1fr;
+  }
+}
+
+.foot__lede {
+  font-family: var(--f-sans);
+  font-size: 15px;
+  line-height: 1.6;
+  color: var(--ink-2);
+  max-width: 420px;
+  margin: 14px 0 0;
+}
+
+.foot__list {
+  list-style: none;
+  padding: 0;
+  margin: 14px 0 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  font-family: var(--f-display);
+  font-size: 20px;
+  text-transform: uppercase;
+}
+
+.foot__list a {
+  position: relative;
+  transition: color 0.2s;
+}
+
+.foot__list a:hover {
+  color: var(--acid);
+}
+
+.foot__list--mono {
+  font-family: var(--f-mono);
+  font-size: 12px;
+  letter-spacing: 0.08em;
+  color: var(--muted);
+}
+
+.foot__giant {
+  margin-top: 48px;
+  display: flex;
+  justify-content: center;
+  line-height: 0;
+}
+
+.foot__giant canvas {
+  max-width: 100%;
+  height: auto !important;
+}
+
+.foot__bar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px 32px;
+  justify-content: space-between;
+  padding-top: 18px;
+  padding-bottom: 28px;
+  border-top: 1px solid var(--line);
+  font-family: var(--f-mono);
+  font-size: 10px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--dim);
+}

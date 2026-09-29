@@ -1,0 +1,73 @@
+.cursor-dot,
+.cursor-ring {
+  position: fixed;
+  top: 0;
+  left: 0;
+  pointer-events: none;
+  z-index: 200;
+}
+
+.cursor-dot {
+  width: 4px;
+  height: 4px;
+  margin: -2px 0 0 -2px;
+  background: var(--acid);
+}
+
+.cursor-ring {
+  translate: -50% -50%;
+  border: 1px solid rgba(233, 229, 219, 0.55);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  mix-blend-mode: difference;
+}
+
+.cursor-ring--link {
+  border-color: var(--acid);
+  mix-blend-mode: normal;
+}
+
+.cursor-ring--view {
+  border-color: var(--acid);
+  background: var(--acid);
+  mix-blend-mode: normal;
+}
+
+.cursor-tick {
+  position: absolute;
+  background: var(--acid);
+}
+
+.cursor-tick--t,
+.cursor-tick--b {
+  width: 1px;
+  height: 6px;
+  left: 50%;
+}
+.cursor-tick--t {
+  top: -7px;
+}
+.cursor-tick--b {
+  bottom: -7px;
+}
+.cursor-tick--l,
+.cursor-tick--r {
+  height: 1px;
+  width: 6px;
+  top: 50%;
+}
+.cursor-tick--l {
+  left: -7px;
+}
+.cursor-tick--r {
+  right: -7px;
+}
+
+.cursor-label {
+  font-family: var(--f-mono);
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.16em;
+  color: var(--bg);
+}

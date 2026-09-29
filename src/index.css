@@ -1,0 +1,174 @@
+:root {
+  --bg: #0a0a0b;
+  --bg-2: #101013;
+  --bg-3: #16161a;
+  --ink: #e9e5db;
+  --ink-2: #a5a199;
+  --muted: #8f8b82;
+  --dim: #56534d;
+  --line: rgba(233, 229, 219, 0.12);
+  --line-2: rgba(233, 229, 219, 0.22);
+  --acid: #a3e635;
+  --acid-hi: #c7f56a;
+  --blood: #d23b3b;
+  --blood-hi: #e35151;
+
+  --f-display: 'Oswald', 'Arial Narrow', sans-serif;
+  --f-mono: 'IBM Plex Mono', ui-monospace, monospace;
+  --f-sans: 'IBM Plex Sans', system-ui, sans-serif;
+
+  --gutter: clamp(16px, 4vw, 48px);
+  --max: 1440px;
+  --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  background: var(--bg);
+  color: var(--ink);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+html.lenis,
+html.lenis body {
+  height: auto;
+}
+.lenis.lenis-smooth {
+  scroll-behavior: auto !important;
+}
+
+body {
+  margin: 0;
+  font-family: var(--f-sans);
+  background: var(--bg);
+  overflow-x: hidden;
+}
+
+@media (pointer: fine) {
+  body.has-cursor,
+  body.has-cursor a,
+  body.has-cursor button {
+    cursor: none;
+  }
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+button {
+  font: inherit;
+  color: inherit;
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+}
+
+img {
+  display: block;
+  max-width: 100%;
+}
+
+::selection {
+  background: var(--acid);
+  color: var(--bg);
+}
+
+:focus-visible {
+  outline: 2px solid var(--acid);
+  outline-offset: 3px;
+}
+
+.wrap {
+  width: 100%;
+  max-width: var(--max);
+  margin: 0 auto;
+  padding: 0 var(--gutter);
+}
+
+.kicker {
+  font-family: var(--f-mono);
+  font-size: 11px;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--dim);
+}
+
+.kicker--acid {
+  color: var(--acid);
+}
+
+.display {
+  font-family: var(--f-display);
+  font-weight: 700;
+  text-transform: uppercase;
+  line-height: 0.86;
+  letter-spacing: -0.01em;
+  margin: 0;
+}
+
+.outline {
+  color: transparent;
+  -webkit-text-stroke: 1.5px var(--ink);
+}
+
+.outline--acid {
+  -webkit-text-stroke-color: var(--acid);
+}
+
+/* Global film grain — sits above everything, never catches the pointer. */
+.grain {
+  position: fixed;
+  inset: 0;
+  z-index: 90;
+  pointer-events: none;
+  opacity: 0.55;
+  mix-blend-mode: overlay;
+}
+
+.grain canvas {
+  width: 100% !important;
+  height: 100% !important;
+}
+
+/* Scanlines — subtle CRT texture over the whole viewport. */
+.scanlines {
+  position: fixed;
+  inset: 0;
+  z-index: 89;
+  pointer-events: none;
+  background: repeating-linear-gradient(
+    to bottom,
+    rgba(0, 0, 0, 0) 0,
+    rgba(0, 0, 0, 0) 2px,
+    rgba(0, 0, 0, 0.18) 3px
+  );
+  mix-blend-mode: multiply;
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+  }
+}

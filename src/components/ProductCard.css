@@ -1,0 +1,244 @@
+.pcard {
+  position: relative;
+}
+
+.pcard__media {
+  position: relative;
+}
+
+.pcard__link {
+  display: block;
+}
+
+.pcard__art {
+  position: relative;
+  aspect-ratio: 2 / 3;
+  overflow: hidden;
+  background: repeating-linear-gradient(135deg, #141418 0 10px, #191920 10px 20px);
+  border: 1px solid var(--line);
+  transition: border-color 0.3s;
+}
+
+.pcard:hover .pcard__art {
+  border-color: var(--acid);
+}
+
+.pcard__img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition:
+    transform 0.9s var(--ease-out),
+    filter 0.6s var(--ease-out),
+    opacity 0.3s;
+}
+
+.pcard__img--main {
+  filter: grayscale(0.35) contrast(1.05);
+}
+
+/* Chromatic-split ghosts, only visible on hover. */
+.pcard__img--r,
+.pcard__img--g {
+  opacity: 0;
+  mix-blend-mode: screen;
+}
+.pcard__img--r {
+  filter: sepia(1) saturate(8) hue-rotate(-40deg);
+}
+.pcard__img--g {
+  filter: sepia(1) saturate(8) hue-rotate(40deg);
+}
+
+.pcard:hover .pcard__img--main {
+  transform: scale(1.06);
+  filter: grayscale(0) contrast(1.1);
+}
+.pcard:hover .pcard__img--r {
+  opacity: 0.35;
+  transform: scale(1.06) translate(-5px, 1px);
+  animation: jitter 0.25s steps(2) infinite;
+}
+.pcard:hover .pcard__img--g {
+  opacity: 0.3;
+  transform: scale(1.06) translate(5px, -1px);
+  animation: jitter 0.3s steps(2) infinite reverse;
+}
+
+@keyframes jitter {
+  50% {
+    translate: 2px -1px;
+  }
+}
+
+.pcard__scan {
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 30%;
+  top: -30%;
+  background: linear-gradient(to bottom, transparent, rgba(163, 230, 53, 0.14), transparent);
+  pointer-events: none;
+}
+
+.pcard:hover .pcard__scan {
+  animation: scan 1.4s linear infinite;
+}
+
+@keyframes scan {
+  to {
+    top: 100%;
+  }
+}
+
+.pcard__ghost {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+  text-align: center;
+  font-family: var(--f-display);
+  font-weight: 700;
+  font-size: 28px;
+  line-height: 0.9;
+  text-transform: uppercase;
+  color: rgba(233, 229, 219, 0.14);
+}
+
+.pcard__reg,
+.pcard__ed,
+.pcard__label,
+.pcard__flag {
+  position: absolute;
+  font-family: var(--f-mono);
+  font-size: 9px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  padding: 3px 6px;
+  background: rgba(10, 10, 11, 0.72);
+  backdrop-filter: blur(4px);
+}
+
+.pcard__reg {
+  top: 10px;
+  left: 10px;
+  color: var(--muted);
+}
+
+.pcard__ed {
+  top: 10px;
+  right: 10px;
+  color: var(--acid);
+}
+
+.pcard__label {
+  bottom: 10px;
+  left: 10px;
+  right: 52px;
+  color: var(--ink-2);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.pcard__flag {
+  top: 34px;
+  right: 10px;
+  background: var(--blood);
+  color: var(--bg);
+  font-weight: 600;
+  animation: flicker 2.4s infinite;
+}
+
+.pcard__flag--out {
+  background: var(--dim);
+  animation: none;
+}
+
+@keyframes flicker {
+  0%,
+  92%,
+  100% {
+    opacity: 1;
+  }
+  94% {
+    opacity: 0.2;
+  }
+  96% {
+    opacity: 1;
+  }
+  97% {
+    opacity: 0.4;
+  }
+}
+
+.pcard__body {
+  display: block;
+  padding-top: 12px;
+}
+
+.pcard__title {
+  margin: 0;
+  font-family: var(--f-display);
+  font-weight: 600;
+  font-size: clamp(16px, 1.4vw, 20px);
+  text-transform: uppercase;
+  line-height: 1;
+  transition: color 0.2s;
+}
+
+.pcard:hover .pcard__title {
+  color: var(--acid);
+}
+
+.pcard__meta {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 6px;
+  font-family: var(--f-mono);
+  font-size: 10px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--dim);
+}
+
+.pcard__price {
+  color: var(--acid);
+  font-size: 12px;
+  font-weight: 500;
+}
+
+.pcard__add {
+  position: absolute;
+  z-index: 2;
+  right: 10px;
+  bottom: 10px;
+  width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--bg);
+  border: 1px solid var(--acid);
+  color: var(--acid);
+  font-family: var(--f-mono);
+  font-size: 18px;
+  transition:
+    background 0.2s,
+    color 0.2s;
+}
+
+.pcard__add:hover:not(:disabled),
+.pcard__add.is-added {
+  background: var(--acid);
+  color: var(--bg);
+}
+
+.pcard__add:disabled {
+  border-color: var(--dim);
+  color: var(--dim);
+}
