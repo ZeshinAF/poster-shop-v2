@@ -14,7 +14,7 @@ export function Footer() {
           <div>
             <div className="kicker kicker--acid">// тираж</div>
             <p className="foot__lede">
-              Печатница за несъгласни. Плакати, дрехи и други улики за хора с позиция. Без реклами. Без благодарствено писмо.
+              Печатница за несъгласни. Плакати, дрехи и други улики за хора с позиция. Без реклами. С писмо в пакета.
             </p>
           </div>
           <div>
@@ -66,7 +66,7 @@ export function Footer() {
       <div className="wrap foot__bar">
         <span>© {new Date().getFullYear()} Тираж</span>
         <span>{isDemo ? 'тестова версия · демо режим' : 'тестова версия'}</span>
-        <span>Без реклами. Без благодарствено писмо.</span>
+        <span>Без реклами. С писмо в пакета.</span>
       </div>
     </footer>
   );

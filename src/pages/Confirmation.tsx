@@ -52,7 +52,7 @@ export default function Confirmation() {
         </div>
 
         <motion.p className="done__text" initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 1.3 }}>
-          Пристига опаковано — без реклами, без благодарствено писмо. Закачи го или го облечи. И не питай никого.
+          Пристига опаковано — без реклами, с писмо от нас вътре. Закачи го или го облечи. И не питай никого.
           {order.demo && ' (Това беше тестова поръчка — нищо не е изпратено.)'}
         </motion.p>
 
