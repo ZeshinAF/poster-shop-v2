@@ -18,9 +18,9 @@ function makeTile(size = 160, alpha = 14): string {
 /**
  * Film grain. Replaces React Bits' Noise, which regenerated a 512² random
  * texture on the main thread every few frames and was full-screen blended.
- * Here one small tile is generated once and jittered with a stepped CSS
- * transform — compositor-only, no per-frame JS, no blend mode. Scanlines are
- * baked into the same layer (see .grain in index.css).
+ * Here one small tile is generated once and laid down as a static background
+ * layer — no per-frame work at all. Scanlines share the layer (see .grain in
+ * index.css).
  */
 export function Grain() {
   const [tile] = useState(makeTile);

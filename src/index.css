@@ -127,37 +127,21 @@ img {
   -webkit-text-stroke-color: var(--acid);
 }
 
-/* Film grain + scanlines in ONE fixed layer (two full-screen overlays cost
-   ~15fps while scrolling). Oversized (inset -20%) so the ±7% jitter never
-   exposes an edge. The jitter pauses while Lenis is scrolling — the moment
-   frames matter most — and resumes when the page is still. */
-/* Behind all content (z-index -1): textures the dark background only, never
-   poster images or text. */
+/* Film grain + scanlines in ONE fixed, static layer behind all content
+   (z-index -1 with <body> transparent), so it textures the background only.
+   Static on purpose: jittering it forced everything semi-transparent above
+   it (e.g. the hero's paste-up wall) to be re-blended every step, costing
+   ~20fps idle, and behind the content the motion was barely visible. */
 .grain {
   position: fixed;
-  inset: -20%;
+  inset: 0;
   z-index: -1;
   pointer-events: none;
   background-image:
     repeating-linear-gradient(to bottom, transparent 0 2px, rgba(0, 0, 0, 0.1) 2px 3px),
     var(--grain-tile, none);
   background-repeat: repeat;
-  will-change: transform;
-  animation: grain 0.5s steps(4) infinite;
 }
-
-html.lenis-scrolling .grain {
-  animation-play-state: paused;
-}
-
-@keyframes grain {
-  0% { transform: translate3d(0, 0, 0); }
-  25% { transform: translate3d(-7%, 4%, 0); }
-  50% { transform: translate3d(5%, -6%, 0); }
-  75% { transform: translate3d(-3%, 7%, 0); }
-  100% { transform: translate3d(0, 0, 0); }
-}
-
 
 .sr-only {
   position: absolute;

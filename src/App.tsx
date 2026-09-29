@@ -21,6 +21,8 @@ const NotFound = lazy(() => import('./pages/NotFound'));
 const BOOT_KEY = 'tirazh-v2:booted';
 
 function shouldBoot(): boolean {
+  // "boot=1" anywhere in the URL replays the intro (it normally shows once per session).
+  if (/[?&]boot=1/.test(window.location.hash + window.location.search)) return true;
   try {
     return !sessionStorage.getItem(BOOT_KEY);
   } catch {

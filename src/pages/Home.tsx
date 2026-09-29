@@ -1,21 +1,20 @@
 import { motion, useScroll, useSpring, useTransform, useVelocity } from 'motion/react';
-import { useLayoutEffect, useRef, useState } from 'react';
-import { Link } from 'react-router-dom';
+import { useLayoutEffect, useMemo, useRef, useState } from 'react';
+import { Link, useSearchParams } from 'react-router-dom';
 import DecryptedText from '../bits/DecryptedText';
 import Magnet from '../bits/Magnet';
 import ScrollVelocity from '../bits/ScrollVelocity';
 import TiltedCard from '../bits/TiltedCard';
-import { GlitchField } from '../components/GlitchField';
+import { Halftone } from '../components/Halftone';
 import { Page } from '../components/Page';
+import { PasteWall } from '../components/PasteWall';
 import { CountUp, Reveal, ScrubText, SplitReveal } from '../components/motion';
 import { money, typeLabel, type Kind, type Product } from '../lib/api';
 import { poster, posterFor } from '../lib/images';
 import { useStore } from '../lib/store';
 import './Home.css';
 
-// Module-level so the canvas effect never sees a "new" array and re-lays out.
-const GLITCH_COLORS = ['#1c2412', '#2b3d14', '#3f5c17', '#a3e635', '#2a1212'];
-const GLITCH_CHARS = 'ТИРАЖ//ABCDEFGHIJKLMNOPQRSTUVWXYZ!@#$&*<>0123456789';
+type HeroBg = 'wall' | 'halftone';
 
 function Stamp() {
   const { scrollY } = useScroll();
@@ -40,18 +39,29 @@ function Stamp() {
   );
 }
 
-function Hero({ count }: { count: number }) {
+function Hero({ products, bg }: { products: Product[]; bg: HeroBg }) {
+  const count = products.length;
+  // Stable references so the background components don't re-lay out on unrelated re-renders.
+  const wallImages = useMemo(() => products.flatMap((p) => (p.image ? [p.image] : [])), [products]);
+  const halftoneSrc = useMemo(() => {
+    const p = products.find((x) => x.id === 'alien' && x.image) ?? products.find((x) => x.image);
+    if (!p?.image) return null;
+    const src = poster(p.image, 640);
+    // Pixels are read from this image, which only works same-origin: use the
+    // local optimized copy, never the remote original (it would taint the canvas).
+    return src.startsWith(import.meta.env.BASE_URL) ? src : null;
+  }, [products]);
   const ref = useRef<HTMLElement>(null);
   const { scrollYProgress } = useScroll({ target: ref, offset: ['start start', 'end start'] });
   const titleY = useTransform(scrollYProgress, [0, 1], ['0%', '38%']);
   const titleScale = useTransform(scrollYProgress, [0, 1], [1, 0.86]);
   const fade = useTransform(scrollYProgress, [0, 0.7], [1, 0]);
-  const bgOpacity = useTransform(scrollYProgress, [0, 1], [0.34, 0]);
+  const bgOpacity = useTransform(scrollYProgress, [0, 1], [bg === 'wall' ? 0.42 : 0.5, 0]);
 
   return (
     <section ref={ref} className="hero">
       <motion.div className="hero__bg" style={{ opacity: bgOpacity }} aria-hidden="true">
-        <GlitchField colors={GLITCH_COLORS} characters={GLITCH_CHARS} />
+        {bg === 'wall' ? <PasteWall images={wallImages} /> : <Halftone src={halftoneSrc} />}
       </motion.div>
       <div className="hero__fade" aria-hidden="true" />
 
@@ -240,11 +250,14 @@ function Manifesto() {
   );
 }
 
-function Specs({ count }: { count: number }) {
+function Specs({ products }: { products: Product[] }) {
+  const count = products.length;
+  // Live: total pieces on the shelf right now (sum of stock across the catalog).
+  const onShelf = products.reduce((sum, p) => sum + p.stock, 0);
   const items = [
     { k: 'Заглавия', v: <CountUp to={count} />, note: 'В обращение сега.' },
     { k: 'Реклами', v: <CountUp to={0} />, note: 'Нито една. Никъде.' },
-    { k: 'Писма в пакета', v: <CountUp to={1} />, note: 'Във всяка поръчка. Прочети го.' },
+    { k: 'Чакат собственик', v: <CountUp to={onShelf} />, note: 'Броя на склад точно сега.' },
     { k: 'Безплатна доставка', v: <CountUp to={80} suffix=" €" />, note: 'Над тази сума. Под нея — 6 €.' },
   ];
   return (
@@ -315,13 +328,16 @@ function Split({ products }: { products: Product[] }) {
 
 export default function Home() {
   const { products } = useStore();
+  // ?bg=halftone switches the hero background (the paste-up wall is the default).
+  const [params] = useSearchParams();
+  const bg: HeroBg = params.get('bg') === 'halftone' ? 'halftone' : 'wall';
   return (
     <Page>
-      <Hero count={products.length} />
+      <Hero products={products} bg={bg} />
       <Tape />
       {products.length > 0 && <Gallery products={products} />}
       <Manifesto />
-      <Specs count={products.length} />
+      <Specs products={products} />
       {products.length > 0 && <Split products={products} />}
     </Page>
   );

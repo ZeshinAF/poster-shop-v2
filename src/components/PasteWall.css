@@ -1,0 +1,22 @@
+.wall {
+  position: absolute;
+  inset: -4%;
+  will-change: transform;
+}
+
+.wall__piece {
+  position: absolute;
+  aspect-ratio: 4 / 5;
+  overflow: hidden;
+  box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.4);
+}
+
+/* Duotone: the poster's luminance over a flat palette colour. */
+.wall__piece img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  mix-blend-mode: luminosity;
+  filter: grayscale(1) contrast(1.35);
+  opacity: 0.9;
+}
