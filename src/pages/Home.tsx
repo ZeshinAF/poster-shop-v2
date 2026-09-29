@@ -248,12 +248,13 @@ function Manifesto() {
 
 function Specs({ products }: { products: Product[] }) {
   const count = products.length;
-  // Live: total pieces on the shelf right now (sum of stock across the catalog).
-  const onShelf = products.reduce((sum, p) => sum + p.stock, 0);
+  // Live: cheapest title you can actually buy right now (falls back to all if everything's sold out).
+  const buyable = products.some((p) => p.stock > 0) ? products.filter((p) => p.stock > 0) : products;
+  const fromPrice = buyable.length ? Math.floor(Math.min(...buyable.map((p) => p.price))) : 0;
   const items = [
     { k: 'Заглавия', v: <CountUp to={count} />, note: 'В обращение сега.' },
     { k: 'Реклами', v: <CountUp to={0} />, note: 'Нито една. Никъде.' },
-    { k: 'Чакат собственик', v: <CountUp to={onShelf} />, note: 'Броя на склад точно сега.' },
+    { k: 'Започваме от', v: <CountUp to={fromPrice} suffix=" €" />, note: 'Най-евтиното заглавие в момента.' },
     { k: 'Безплатна доставка', v: <CountUp to={80} suffix=" €" />, note: 'Над тази сума. Под нея — 6 €.' },
   ];
   return (
